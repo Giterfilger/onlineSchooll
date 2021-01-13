@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS journal
     type        VARCHAR(32),
     visiting    BOOLEAN NOT NULL,
 --  change1
+--  change2
     CONSTRAINT fk_journal_student
         FOREIGN KEY (student_id)
             REFERENCES student (id) ON DELETE CASCADE,
