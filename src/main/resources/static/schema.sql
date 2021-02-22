@@ -4,6 +4,17 @@ CREATE TABLE IF NOT EXISTS clazz
     name    VARCHAR(32) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS admin
+(
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(32) NOT NULL,
+    surname     VARCHAR(32) NOT NULL,
+    email       VARCHAR(32) NOT NULL,
+    phone       VARCHAR(32) NOT NULL,
+    password    VARCHAR(32) NOT NULL,
+    test        VARCHAR(32) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS student
 (
     id          INT AUTO_INCREMENT PRIMARY KEY,
@@ -11,6 +22,8 @@ CREATE TABLE IF NOT EXISTS student
     surname     VARCHAR(32) NOT NULL,
     email       VARCHAR(32) NOT NULL,
     phone       VARCHAR(32) NOT NULL,
+    password    VARCHAR(32) NOT NULL,
+    role        VARCHAR(32) NOT NULL,
     clazz_id    INT NOT NULL,
 
     CONSTRAINT fk_student_clazz
@@ -24,7 +37,8 @@ CREATE TABLE IF NOT EXISTS teacher
     name        VARCHAR(32) NOT NULL,
     surname     VARCHAR(32) NOT NULL,
     email       VARCHAR(32) NOT NULL,
-    phone       VARCHAR(32) NOT NULL
+    phone       VARCHAR(32) NOT NULL,
+    password    VARCHAR(32) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS subject
@@ -42,6 +56,18 @@ CREATE TABLE IF NOT EXISTS subject
     CONSTRAINT fk_subject_clazz
         FOREIGN KEY (clazz_id)
             REFERENCES clazz (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS type
+(
+    id            INT AUTO_INCREMENT PRIMARY KEY,
+    name          VARCHAR(32) NOT NULL,
+    coefficient   INT NOT NULL DEFAULT 1,
+    subject_id      INT NOT NULL,
+
+    CONSTRAINT fk_type_subject
+        FOREIGN KEY (subject_id)
+            REFERENCES subject (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS topic
@@ -66,8 +92,7 @@ CREATE TABLE IF NOT EXISTS journal
     mark        INT,
     type        VARCHAR(32),
     visiting    BOOLEAN NOT NULL,
---  change1
---  change2
+
     CONSTRAINT fk_journal_student
         FOREIGN KEY (student_id)
             REFERENCES student (id) ON DELETE CASCADE,
@@ -76,5 +101,4 @@ CREATE TABLE IF NOT EXISTS journal
         FOREIGN KEY (subject_id)
             REFERENCES subject (id) ON DELETE CASCADE
 );
-
 

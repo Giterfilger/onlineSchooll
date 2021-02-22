@@ -23,3 +23,12 @@ spring:
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
 server:
   port: 8081
+
+jwt:
+  token:
+    secret: GiterfilgerKey
+    expired: 3600000
+    cookie:
+      name: AJWT
+#    authentication:
+#      expire-date: 3600000

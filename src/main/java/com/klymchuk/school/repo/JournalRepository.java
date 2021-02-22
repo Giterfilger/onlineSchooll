@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface JournalRepository extends JpaRepository<Journal, Integer> {
     List<Journal> findByStudentId(int student_id);
+    List<Journal> findByStudentIdAndSubjectId(int student_id, int subjectId);
 }

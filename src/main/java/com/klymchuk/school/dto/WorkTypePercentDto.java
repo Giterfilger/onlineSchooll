@@ -7,8 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class TopicDto {
-    private String description;
-    private String homework;
-    private String resources;
+public class WorkTypePercentDto {
+    String name;
+    double percent;
 }

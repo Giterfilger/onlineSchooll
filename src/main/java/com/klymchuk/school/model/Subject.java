@@ -38,4 +38,7 @@ public class Subject {
     @OneToMany(mappedBy = "subject")
     private List<Topic> topics;
 
+    @OneToMany(mappedBy = "subject")
+    private List<WorkType> workTypes;
+
 }

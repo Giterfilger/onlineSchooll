@@ -16,5 +16,6 @@ public class MainTeacherDto {
     private String surname;
     private String email;
     private String phone;
+    private String password;
 
 }

@@ -19,7 +19,7 @@ public class JournalFilterDto {
     private String endDate;
 
     @ApiModelProperty(example = "1")
-    private int subject_id;
+    private int subjectId;
 
     @ApiModelProperty(example = "true")
     private boolean isMark;

@@ -7,6 +7,7 @@ import com.klymchuk.school.model.Student;
 import com.klymchuk.school.repo.ClazzRepository;
 import com.klymchuk.school.repo.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class StudentService {
@@ -50,8 +52,13 @@ public class StudentService {
     public List<MainStudentDto> getAll() {
         return studentRepository.findAll()
                 .stream()
-                .map(c -> modelMapper.map(c, MainStudentDto.class))
+                .peek(s -> log.info("Student: " + s.getClazz()))
+                .map(s -> modelMapper.map(s, MainStudentDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public Student getStudentByEmail(String email){
+        return studentRepository.getStudentByEmail(email);
     }
 
     private Student getSubjectById(int id) {

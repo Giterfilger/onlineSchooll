@@ -3,6 +3,7 @@ package com.klymchuk.school.controller;
 import com.klymchuk.school.dto.JournalDto;
 import com.klymchuk.school.dto.JournalFilterDto;
 import com.klymchuk.school.dto.MainJournalDto;
+import com.klymchuk.school.dto.WorkTypePercentDto;
 import com.klymchuk.school.service.JournalService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -28,26 +29,6 @@ public class JournalController {
         return journalService.getById(id);
     }
 
-    @GetMapping("/student/")
-    List<MainJournalDto> getJournalsStudentId(int studentId) {
-        return journalService.getJournalsByStudentId(studentId);
-    }
-
-    @GetMapping("/subject/")
-    List<MainJournalDto> getJournalsBySubjectId(int subjectId) {
-        return journalService.getJournalsBySubjectId(subjectId);
-    }
-
-    @GetMapping("/date/")
-    List<MainJournalDto> getJournalsByStudentIdAndDate(int studentId, String dateFirst, String dateSecond) {
-        return journalService.getJournalsByStudentIdAndDate(studentId, dateFirst, dateSecond);
-    }
-
-    @GetMapping("/type/")
-    List<MainJournalDto> getJournalsByStudentIdAndType(int studentId, String type) {
-        return journalService.getJournalsByStudentIdAndType(studentId, type);
-    }
-
     @PostMapping("/filter/")
     List<MainJournalDto> getJournalsByFilter(@RequestBody JournalFilterDto journalFilter, int studentId) {
         return journalService.getJournalByFilter(journalFilter, studentId);
@@ -56,6 +37,11 @@ public class JournalController {
     @GetMapping("/average/")
     Long getAverageMark(int studentId, int subjectId) {
         return journalService.getAverageStudentSubjectMark(studentId, subjectId);
+    }
+
+    @GetMapping("/percent/")
+    List<WorkTypePercentDto> getPercentOfWorkType(int studentId, int subjectId) {
+        return journalService.getPercentOfWorkType(subjectId, studentId);
     }
 
     @PostMapping("/")

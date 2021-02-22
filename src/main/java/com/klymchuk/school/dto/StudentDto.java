@@ -24,4 +24,10 @@ public class StudentDto {
     @ApiModelProperty(example = "VushniaChereshnia")
     private String phone;
 
+    @ApiModelProperty(example = "pass")
+    private String password;
+
+    @ApiModelProperty(example = "USER")
+    private String role;
+
 }

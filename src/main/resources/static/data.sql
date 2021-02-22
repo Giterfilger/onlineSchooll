@@ -1,15 +1,24 @@
 INSERT INTO clazz(name)
 VALUES ('7-A');
 
-INSERT INTO student(name, surname, email, phone, clazz_id)
-VALUES ('Andrii', 'Klymchuk', 'andrii@gmail.com', '0507898745', 1),
-       ('Bohdan', 'Kravchuk', 'bohdan@gmail.com', '0507898746', 1);
+INSERT INTO admin(name, surname, email, phone, password, test)
+VALUES ('Andrii', 'Klymchuk', 'andrii@gmail.com', '0507898745', 'admin', 'test');
 
-INSERT INTO teacher(name, surname, email, phone)
-VALUES ('Oleh', 'Bug', 'oleh@gmail.com','0507898747');
+INSERT INTO student(name, surname, email, phone, password, role, clazz_id)
+VALUES ('Andrii', 'Klymchuk', 'andrii@gmail.com', '0507898745', 'pass', 'STUDENT', 1),
+       ('Bohdan', 'Kravchuk', 'bohdan@gmail.com', '0507898746', 'pass', 'STUDENT', 1);
+
+INSERT INTO teacher(name, surname, email, password, phone)
+VALUES ('Oleh', 'Bug', 'oleh@gmail.com', 'pass', '0507898747');
 
 INSERT INTO subject(name, count_of_hour, teacher_id, clazz_id)
 VALUES ('Math', 175, 1, 1);
+
+INSERT INTO type(name, coefficient, subject_id)
+VALUES ('class work', 2, 1),
+       ('home work', 2, 1),
+       ('independent work', 5, 1),
+       ('control work', 7, 1);
 
 INSERT INTO topic(description, homework, resources, subject_id)
 VALUES ('Topic-1', 'task 1.1, 1.2', 'page 5-10', 1),
