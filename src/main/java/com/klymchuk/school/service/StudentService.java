@@ -41,6 +41,8 @@ public class StudentService {
     public MainStudentDto update(StudentDto studentDto, int id) {
         Student student = getSubjectById(id);
         modelMapper.map(studentDto, student);
+
+
         return modelMapper.map(studentRepository.save(student), MainStudentDto.class);
     }
 
