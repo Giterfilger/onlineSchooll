@@ -34,7 +34,6 @@ public class StudentService {
         Student student = modelMapper.map(studentDto, Student.class);
         student.setClazz(clazzRepository.findById(classId)
                 .orElseThrow(() -> new EntityNotFoundException("Class with id: " + classId + "not found")));
-
         return modelMapper.map(studentRepository.save(student), MainStudentDto.class);
     }
 

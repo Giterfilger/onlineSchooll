@@ -19,4 +19,6 @@ public class MainStudentDto {
     private String password;
     private ClazzDto clazz;
 
+
+
 }
