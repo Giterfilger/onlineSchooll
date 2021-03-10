@@ -30,5 +30,8 @@ jwt:
     expired: 3600000
     cookie:
       name: AJWT
-#    authentication:
-#      expire-date: 3600000
+
+cloudinary:
+  cloud_name: giterfilger
+  api_key: 661675781718562
+  api_secret: o5al7-wSKgNcHLi8Q0L8mQUJIhk

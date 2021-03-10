@@ -4,9 +4,9 @@ VALUES ('7-A');
 INSERT INTO admin(name, surname, email, phone, password, test)
 VALUES ('Andrii', 'Klymchuk', 'andrii@gmail.com', '0507898745', 'admin', 'test');
 
-INSERT INTO student(name, surname, email, phone, password, role, clazz_id)
-VALUES ('Andrii', 'Klymchuk', 'andrii@gmail.com', '0507898745', 'pass', 'STUDENT', 1),
-       ('Bohdan', 'Kravchuk', 'bohdan@gmail.com', '0507898746', 'pass', 'STUDENT', 1);
+INSERT INTO student(name, surname, email, phone, password, role, image_url, clazz_id)
+VALUES ('Andrii', 'Klymchuk', 'andrii@gmail.com', '0507898745', 'pass', 'STUDENT', 'http://res.cloudinary.com/giterfilger/image/upload/v1615318135/school/student/1-id.jpg', 1),
+       ('Bohdan', 'Kravchuk', 'bohdan@gmail.com', '0507898746', 'pass', 'STUDENT', 'http://res.cloudinary.com/giterfilger/image/upload/v1615318631/school/student/2-id.jpg', 1);
 
 INSERT INTO teacher(name, surname, email, password, phone)
 VALUES ('Oleh', 'Bug', 'oleh@gmail.com', 'pass', '0507898747');

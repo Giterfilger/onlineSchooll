@@ -6,6 +6,7 @@ import com.klymchuk.school.service.StudentService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,8 +29,10 @@ public class StudentController {
     }
 
     @PostMapping("/")
-    MainStudentDto saveStudent(int classId, @RequestBody StudentDto studentDto) {
-        return studentService.save(studentDto, classId);
+    MainStudentDto saveStudent(int classId,
+                               StudentDto studentDto,
+                               @RequestParam(value = "file", required = false) MultipartFile image ) {
+        return studentService.save(studentDto, classId, image);
     }
 
     @PutMapping("/{id}")

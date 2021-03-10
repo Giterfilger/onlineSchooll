@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS student
     phone       VARCHAR(32) NOT NULL,
     password    VARCHAR(32) NOT NULL,
     role        VARCHAR(32) NOT NULL,
+    image_url   VARCHAR(264),
     clazz_id    INT NOT NULL,
 
     CONSTRAINT fk_student_clazz

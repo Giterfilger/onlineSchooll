@@ -13,21 +13,8 @@ import java.util.List;
 @Table(name = "student")
 public class Student extends User{
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private int id;
-//
-//    @Column(name = "name")
-//    private String name;
-//
-//    @Column(name = "surname")
-//    private String surname;
-//
-//    @Column(name = "email")
-//    private String email;
-//
-//    @Column(name = "phone")
-//    private String phone;
+    @Column(name = "image_url")
+    String imageUrl;
 
     @OneToMany(mappedBy = "student")
     private List<Journal> journals;

@@ -17,6 +17,7 @@ public class MainStudentDto {
     private String email;
     private String phone;
     private String password;
+    private String imageUrl;
     private ClazzDto clazz;
 
 }
