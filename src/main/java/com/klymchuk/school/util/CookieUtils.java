@@ -27,7 +27,7 @@ public class CookieUtils {
     }
 
     public static String getCookieValue(HttpServletRequest req, String name) {
-        log.info("Get value from cookie by cookie name");
+        log.info("Get value from cookie by cookie name: " + name);
         Cookie cookie = getCookie(req, name);
         if (cookie == null) {
             return null;
@@ -37,10 +37,8 @@ public class CookieUtils {
 
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
         response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, value)
-                .httpOnly(true)
+                .httpOnly(false)
                 .path("/")
-//                .sameSite("none")
-//                .secure(true)
                 .maxAge(maxAge)
                 .build().toString());
         log.info("{} cookie was added", name);
@@ -52,7 +50,7 @@ public class CookieUtils {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name)) {
                     response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, "")
-                            .httpOnly(true)
+                            .httpOnly(false)
                             .path("/")
                             .sameSite("none")
                             .secure(true)

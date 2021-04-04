@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/students")
 @RequiredArgsConstructor
@@ -26,6 +27,11 @@ public class StudentController {
     @GetMapping("/{id}")
     MainStudentDto getStudentById(@PathVariable int id) {
         return studentService.getById(id);
+    }
+
+    @GetMapping("/me")
+    MainStudentDto me(){
+        return studentService.currentUser();
     }
 
     @PostMapping("/")

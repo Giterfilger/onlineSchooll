@@ -1,5 +1,6 @@
 package com.klymchuk.school.error;
 
+import com.klymchuk.school.error.exceptions.BadCredentialException;
 import com.klymchuk.school.error.exceptions.BadImageException;
 import com.klymchuk.school.error.exceptions.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -37,4 +38,14 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
                 .build();
     }
 
+    @ExceptionHandler(BadCredentialException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ApiError handleBadImageException(BadCredentialException e) {
+        return ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .subErrors(new ArrayList<>())
+                .build();
+    }
 }

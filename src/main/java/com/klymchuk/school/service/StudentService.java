@@ -8,9 +8,12 @@ import com.klymchuk.school.error.exceptions.EntityNotFoundException;
 import com.klymchuk.school.model.Student;
 import com.klymchuk.school.repo.ClazzRepository;
 import com.klymchuk.school.repo.StudentRepository;
+import com.klymchuk.school.security.JwtUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -72,6 +75,17 @@ public class StudentService {
                 .peek(s -> log.info("Student: " + s.getClazz()))
                 .map(s -> modelMapper.map(s, MainStudentDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public MainStudentDto currentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return modelMapper.map(
+                    getById(((JwtUser) principal).getId()),
+                    MainStudentDto.class);
+        } else {
+            throw new EntityNotFoundException("User was not found. Please sign in first");
+        }
     }
 
     public Student getStudentByEmail(String email) {

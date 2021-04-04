@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
-@RestController
 @CrossOrigin
+@RestController
 @RequestMapping("auth/")
 @RequiredArgsConstructor
 @Api(tags = "Authentication")
@@ -22,9 +22,6 @@ public class AuthenticationController {
     @Value("${jwt.token.cookie.name}")
     private String jwtTokenCookieName;
 
-//    @Value("${jwt.authentication.cookie.expire-date}")
-//    private int jwtCookieExpireDate;
-
     private final AuthService authService;
 
     @PostMapping("login")
@@ -32,5 +29,10 @@ public class AuthenticationController {
                       HttpServletResponse httpServletResponse) {
         String token = authService.login(authenticationRequest);
         CookieUtils.addCookie(httpServletResponse, jwtTokenCookieName, token, 3600);
+    }
+
+    @GetMapping("role")
+    public String getUserRole(String token){
+        return authService.getUserRole(token);
     }
 }

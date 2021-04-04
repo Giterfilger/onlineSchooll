@@ -52,6 +52,14 @@ public class SubjectService {
                 .collect(Collectors.toList());
     }
 
+    public List<MainSubjectDto> getSubjectsByClazzId(int clazzId){
+        return subjectRepository.findSubjectByClazzId(clazzId)
+                .stream()
+                .map(s -> modelMapper.map(s, MainSubjectDto.class))
+                .peek(m -> {log.info(m.toString());})
+                .collect(Collectors.toList());
+    }
+
     private Subject getSubjectById(int id) {
         return subjectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Subject with id: " + id + "not found"));

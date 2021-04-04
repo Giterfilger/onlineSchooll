@@ -12,16 +12,19 @@ import com.klymchuk.school.repo.JournalRepository;
 import com.klymchuk.school.repo.StudentRepository;
 import com.klymchuk.school.repo.SubjectRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class JournalService {
@@ -69,24 +72,21 @@ public class JournalService {
             throw new EntityNotFoundException("Student with id: " + studentId + " not found");
         }
 
-        if (!subjectRepository.findById(journalFilter.getSubjectId()).isPresent()) {
-            throw new EntityNotFoundException("Subject with id: " + journalFilter.getSubjectId() + " not found");
-        }
-
         return journalRepository.findByStudentId(studentId)
                 .stream()
-                .filter(j -> j.getSubject().getId() == journalFilter.getSubjectId())
+                .filter(j -> journalFilter.getSubjectIds().contains(j.getSubject().getId()))
                 .filter(j -> j.getDate().isBefore(LocalDate.parse(journalFilter.getEndDate()))
                         && j.getDate().isAfter(LocalDate.parse(journalFilter.getStartDate())))
                 .filter(j -> {
                     if (journalFilter.isMark()) {
                         return j.getMark() != null &&
-                                (j.getType().equals(journalFilter.getTypeOfWork()) ||
-                                        journalFilter.getTypeOfWork().equalsIgnoreCase("all"));
+                                (journalFilter.getTypesOfWork().contains("усі") ||
+                                        journalFilter.getTypesOfWork().contains(j.getType()));
                     } else {
                         return true;
                     }
                 })
+                .sorted(Comparator.comparing(Journal::getDate).reversed())
                 .map(j -> modelMapper.map(j, MainJournalDto.class))
                 .collect(Collectors.toList());
     }
@@ -112,9 +112,11 @@ public class JournalService {
         List<Journal> journals = journalRepository.findByStudentIdAndSubjectId(studentId, subjectId);
 
         Map<String, Integer> mapOfWorkType = journals.stream()
+                .filter(j -> j.getMark() != null)
                 .collect(Collectors.groupingBy(Journal::getType, summingInt(Journal::getMark)));
 
         Map<String, Long> mapWorkTypeAndCountOfMark = journals.stream()
+                .filter(j -> j.getMark() != null)
                 .collect(Collectors.groupingBy(Journal::getType, counting()));
 
         return mapOfWorkType.entrySet().stream()
@@ -141,13 +143,20 @@ public class JournalService {
 
         double markWithCoefficients = 0;
         for (Journal journal : journals) {
-            markWithCoefficients += journal.getMark() * coefficientMap.get(journal.getType());
-            allCoefficients += coefficientMap.get(journal.getType());
+            if (journal.isVisiting()) {
+                markWithCoefficients += journal.getMark() * coefficientMap.get(journal.getType());
+                allCoefficients += coefficientMap.get(journal.getType());
+            }
+        }
+        if (allCoefficients == 0) {
+            return 0.0;
         }
         return markWithCoefficients / allCoefficients;
     }
 
     private double getPercent(double value, long count) {
+        log.info("value: {}", value);
+        log.info("count: {}", count);
         return Math.round(((value * 100) / (count * 12)) * 100.0) / 100.0;
     }
 

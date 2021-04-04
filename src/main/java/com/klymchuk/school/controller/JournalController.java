@@ -7,10 +7,13 @@ import com.klymchuk.school.dto.WorkTypePercentDto;
 import com.klymchuk.school.service.JournalService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
+@CrossOrigin
 @RestController
 @RequestMapping("/journals")
 @RequiredArgsConstructor
@@ -31,6 +34,8 @@ public class JournalController {
 
     @PostMapping("/filter/")
     List<MainJournalDto> getJournalsByFilter(@RequestBody JournalFilterDto journalFilter, int studentId) {
+        log.info(String.valueOf(studentId));
+        log.info(journalFilter.toString());
         return journalService.getJournalByFilter(journalFilter, studentId);
     }
 

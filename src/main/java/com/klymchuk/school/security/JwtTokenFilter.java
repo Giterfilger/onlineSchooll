@@ -36,10 +36,11 @@ public class JwtTokenFilter extends GenericFilterBean {
             throws IOException, ServletException {
         log.info("Starting filter to valid token");
 
-        String token = CookieUtils.getCookieValue((HttpServletRequest) req, "AJWT");
+//        String token = CookieUtils.getCookieValue((HttpServletRequest) req, "Authorization");
+        String token = ((HttpServletRequest)req).getHeader("Authorization");
         HttpServletRequest httpServletRequest = (HttpServletRequest) req;
         HttpServletResponse httpServletResponse = (HttpServletResponse) res;
-
+        log.info("Get jwt token: {}", token);
         try {
             if (token != null && jwtTokenProvider.validateToken(token)) {
                 Authentication auth = jwtTokenProvider.getAuthentication(token);

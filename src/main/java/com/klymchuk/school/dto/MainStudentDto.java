@@ -18,6 +18,6 @@ public class MainStudentDto {
     private String phone;
     private String password;
     private String imageUrl;
-    private ClazzDto clazz;
+    private MainClazzDto clazz;
 
 }
