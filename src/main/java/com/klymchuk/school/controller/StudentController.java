@@ -29,16 +29,25 @@ public class StudentController {
         return studentService.getById(id);
     }
 
-    @GetMapping("/me")
-    MainStudentDto me(){
-        return studentService.currentUser();
+    @GetMapping("/class/{id}")
+    List<MainStudentDto> getStudentsByClassId(@PathVariable int id) {
+        return studentService.getByClassId(id);
     }
 
     @PostMapping("/")
     MainStudentDto saveStudent(int classId,
-                               StudentDto studentDto,
-                               @RequestParam(value = "file", required = false) MultipartFile image ) {
-        return studentService.save(studentDto, classId, image);
+                               @RequestBody StudentDto studentDto) {
+        return studentService.save(studentDto, classId);
+    }
+
+    @PostMapping("/image")
+    void uploadStudentImage(@RequestParam("file") MultipartFile image, @RequestParam int id) {
+        studentService.uploadImage(image, id);
+    }
+
+    @GetMapping("/email")
+    MainStudentDto getStudentByEmail(@RequestParam String email) {
+        return studentService.getMainStudentDtoByEmail(email);
     }
 
     @PutMapping("/{id}")

@@ -34,8 +34,8 @@ public class SubjectController {
     }
 
     @PostMapping("/")
-    MainSubjectDto saveSubject(@RequestBody SubjectDto subjectDto) {
-        return subjectService.save(subjectDto);
+    MainSubjectDto saveSubject(@RequestBody SubjectDto subjectDto, int teacherId, int clazzId) {
+        return subjectService.save(subjectDto, teacherId, clazzId);
     }
 
     @PutMapping("/{id}")

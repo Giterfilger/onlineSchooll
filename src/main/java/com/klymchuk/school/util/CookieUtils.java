@@ -52,8 +52,6 @@ public class CookieUtils {
                     response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(name, "")
                             .httpOnly(false)
                             .path("/")
-                            .sameSite("none")
-                            .secure(true)
                             .maxAge(0)
                             .build().toString());
 

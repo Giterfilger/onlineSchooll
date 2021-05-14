@@ -15,5 +15,6 @@ public class MainSubjectDto {
     private String name;
     private int countOfHour;
     private List<TopicDto> topics;
-
+    private MainClazzDto clazz;
+    private List<WorkTypePercentDto> workTypes;
 }

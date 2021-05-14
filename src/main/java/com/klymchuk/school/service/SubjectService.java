@@ -3,14 +3,20 @@ package com.klymchuk.school.service;
 import com.klymchuk.school.dto.MainSubjectDto;
 import com.klymchuk.school.dto.SubjectDto;
 import com.klymchuk.school.error.exceptions.EntityNotFoundException;
+import com.klymchuk.school.model.Clazz;
 import com.klymchuk.school.model.Subject;
+import com.klymchuk.school.model.Teacher;
+import com.klymchuk.school.model.WorkType;
+import com.klymchuk.school.repo.ClazzRepository;
 import com.klymchuk.school.repo.SubjectRepository;
+import com.klymchuk.school.repo.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -19,6 +25,8 @@ import java.util.stream.Collectors;
 public class SubjectService {
 
     private final SubjectRepository subjectRepository;
+    private final TeacherRepository teacherRepository;
+    private final ClazzRepository clazzRepository;
 
     private final ModelMapper modelMapper;
 
@@ -26,9 +34,21 @@ public class SubjectService {
         return modelMapper.map(getSubjectById(id), MainSubjectDto.class);
     }
 
-    public MainSubjectDto save(SubjectDto subjectDto) {
+    public MainSubjectDto save(SubjectDto subjectDto, int teacherId, int clazzId) {
+        log.info(subjectDto.toString());
+
+        Optional<Teacher> teacher = teacherRepository.findById(teacherId);
+        Optional<Clazz> clazz = clazzRepository.findById(clazzId);
+
         Subject subject = modelMapper.map(subjectDto, Subject.class);
-        return modelMapper.map(subjectRepository.save(subject), MainSubjectDto.class);
+        subject.setTeacher(teacher.orElseThrow(() ->
+                new EntityNotFoundException("Teacher with id: " + teacherId + "not found")));
+        subject.setClazz(clazz.orElseThrow(() ->
+                new EntityNotFoundException("Clazz with id: " + clazzId + "not found")));
+        MainSubjectDto mainSubjectDto = modelMapper.map(subjectRepository.save(subject), MainSubjectDto.class);
+
+        log.info(mainSubjectDto.toString());
+        return mainSubjectDto;
     }
 
     public MainSubjectDto update(SubjectDto subjectDto, int id) {

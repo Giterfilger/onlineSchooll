@@ -1,9 +1,6 @@
 package com.klymchuk.school.controller;
 
-import com.klymchuk.school.dto.JournalDto;
-import com.klymchuk.school.dto.JournalFilterDto;
-import com.klymchuk.school.dto.MainJournalDto;
-import com.klymchuk.school.dto.WorkTypePercentDto;
+import com.klymchuk.school.dto.*;
 import com.klymchuk.school.service.JournalService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +34,12 @@ public class JournalController {
         log.info(String.valueOf(studentId));
         log.info(journalFilter.toString());
         return journalService.getJournalByFilter(journalFilter, studentId);
+    }
+
+    @PostMapping("/teacher/filter/")
+    List<MainJournalDto> getJournalsByTeacherFilter(@RequestBody JournalTeacherFilterDto journalFilter) {
+        log.info(journalFilter.toString());
+        return journalService.getJournalByTeacherFilter(journalFilter);
     }
 
     @GetMapping("/average/")

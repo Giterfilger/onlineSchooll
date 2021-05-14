@@ -1,9 +1,6 @@
 package com.klymchuk.school.service;
 
-import com.klymchuk.school.dto.JournalDto;
-import com.klymchuk.school.dto.JournalFilterDto;
-import com.klymchuk.school.dto.MainJournalDto;
-import com.klymchuk.school.dto.WorkTypePercentDto;
+import com.klymchuk.school.dto.*;
 import com.klymchuk.school.error.exceptions.EntityNotFoundException;
 import com.klymchuk.school.model.Journal;
 import com.klymchuk.school.model.Subject;
@@ -86,6 +83,17 @@ public class JournalService {
                         return true;
                     }
                 })
+                .sorted(Comparator.comparing(Journal::getDate).reversed())
+                .map(j -> modelMapper.map(j, MainJournalDto.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<MainJournalDto> getJournalByTeacherFilter(JournalTeacherFilterDto journalFilter) {
+        return journalRepository.findByStudentIdIn(journalFilter.getStudentIds())
+                .stream()
+                .filter(j -> j.getDate().isBefore(LocalDate.parse(journalFilter.getEndDate()))
+                        && j.getDate().isAfter(LocalDate.parse(journalFilter.getStartDate())))
+                .filter(j -> journalFilter.getSubjectIds().contains(j.getSubject().getId()))
                 .sorted(Comparator.comparing(Journal::getDate).reversed())
                 .map(j -> modelMapper.map(j, MainJournalDto.class))
                 .collect(Collectors.toList());

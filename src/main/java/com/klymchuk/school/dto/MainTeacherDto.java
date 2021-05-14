@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,4 +19,6 @@ public class MainTeacherDto {
     private String email;
     private String phone;
     private String password;
+    private String imageUrl;
+    private List<MainSubjectDto> subjects = new ArrayList<>();
 }

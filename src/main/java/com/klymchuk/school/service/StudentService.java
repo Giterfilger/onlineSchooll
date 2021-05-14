@@ -2,6 +2,7 @@ package com.klymchuk.school.service;
 
 import com.klymchuk.school.cloudinaryapi.CloudinaryManager;
 import com.klymchuk.school.dto.MainStudentDto;
+import com.klymchuk.school.dto.MainTeacherDto;
 import com.klymchuk.school.dto.StudentDto;
 import com.klymchuk.school.error.exceptions.BadImageException;
 import com.klymchuk.school.error.exceptions.EntityNotFoundException;
@@ -38,23 +39,37 @@ public class StudentService {
         return modelMapper.map(getSubjectById(id), MainStudentDto.class);
     }
 
-    public MainStudentDto save(StudentDto studentDto, int classId, MultipartFile image) {
+    public List<MainStudentDto> getByClassId(int id) {
+        return studentRepository.getStudentByClazzId(id).stream()
+                .  map(s -> modelMapper.map(s, MainStudentDto.class))
+                .collect(Collectors.toList());
+
+    }
+
+    public MainStudentDto save(StudentDto studentDto, int classId) {
         Student student = modelMapper.map(studentDto, Student.class);
         student.setClazz(clazzRepository.findById(classId)
                 .orElseThrow(() -> new EntityNotFoundException("Class with id: " + classId + "not found")));
         studentRepository.save(student);
 
+        log.info("Student: " + student.toString());
+        return modelMapper.map(studentRepository.save(student), MainStudentDto.class);
+    }
+
+    public void uploadImage(MultipartFile image, int id) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Student with id: " + id + " not found"));
+
         if (image != null) {
             try {
                 student.setImageUrl(
                         cloudinaryManager.uploadImage(image, "student", student.getId()));
+                studentRepository.save(student);
             } catch (Exception e) {
                 log.error(e.getMessage());
                 throw new BadImageException("bad image for student with id: " + student.getId());
             }
         }
-
-        return modelMapper.map(studentRepository.save(student), MainStudentDto.class);
     }
 
     public MainStudentDto update(StudentDto studentDto, int id) {
@@ -77,17 +92,6 @@ public class StudentService {
                 .collect(Collectors.toList());
     }
 
-    public MainStudentDto currentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            return modelMapper.map(
-                    getById(((JwtUser) principal).getId()),
-                    MainStudentDto.class);
-        } else {
-            throw new EntityNotFoundException("User was not found. Please sign in first");
-        }
-    }
-
     public Student getStudentByEmail(String email) {
         return studentRepository.getStudentByEmail(email);
     }
@@ -95,5 +99,9 @@ public class StudentService {
     private Student getSubjectById(int id) {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Subject with id: " + id + "not found"));
+    }
+
+    public MainStudentDto getMainStudentDtoByEmail(String email) {
+        return modelMapper.map(getStudentByEmail(email), MainStudentDto.class);
     }
 }

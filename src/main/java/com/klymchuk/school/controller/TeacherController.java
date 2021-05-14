@@ -6,6 +6,7 @@ import com.klymchuk.school.service.TeacherService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,9 +29,19 @@ public class TeacherController {
         return teacherService.getById(id);
     }
 
+    @GetMapping("/email")
+    MainTeacherDto getTeacherByEmail(@RequestParam String email){
+        return teacherService.getTeacherByEmail(email);
+    }
+
     @PostMapping("/")
     MainTeacherDto saveTeacher(@RequestBody TeacherDto teacherDto) {
         return teacherService.save(teacherDto);
+    }
+
+    @PostMapping("/image")
+    void uploadTeacherImage(@RequestParam("file") MultipartFile image, @RequestParam int id){
+        teacherService.uploadImage(image, id);
     }
 
     @PutMapping("/{id}")

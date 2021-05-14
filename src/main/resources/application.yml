@@ -27,7 +27,7 @@ server:
 jwt:
   token:
     secret: GiterfilgerKey
-    expired: 3600000
+    expired: 600000000
     cookie:
       name: AJWT
 

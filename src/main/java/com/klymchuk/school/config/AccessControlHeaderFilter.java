@@ -21,7 +21,7 @@ public class AccessControlHeaderFilter implements Filter {
 
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        response.setHeader("Access-Control-Allow-Methods", "GET,HEAD,DELETE,OPTIONS,POST,PUT");
         response.setHeader("Access-Control-Allow-Headers",
                 "Access-Control-Allow-Headers, Access-Control-Request-Methods," +
                     "Content-Type ,Authorization, Access-Control-Request-Headers");
