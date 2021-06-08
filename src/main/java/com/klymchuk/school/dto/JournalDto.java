@@ -21,4 +21,6 @@ public class JournalDto {
     @ApiModelProperty(example = "class work")
     private String type;
 
+    private boolean visiting;
+
 }

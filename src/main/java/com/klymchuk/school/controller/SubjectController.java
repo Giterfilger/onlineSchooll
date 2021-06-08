@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/subjects")
 @RequiredArgsConstructor
@@ -27,9 +28,14 @@ public class SubjectController {
         return subjectService.getById(id);
     }
 
+    @GetMapping("/clazz/{id}")
+    List<MainSubjectDto> getSubjectsByClazzId(@PathVariable int id){
+        return subjectService.getSubjectsByClazzId(id);
+    }
+
     @PostMapping("/")
-    MainSubjectDto saveSubject(@RequestBody SubjectDto subjectDto) {
-        return subjectService.save(subjectDto);
+    MainSubjectDto saveSubject(@RequestBody SubjectDto subjectDto, int teacherId, int clazzId) {
+        return subjectService.save(subjectDto, teacherId, clazzId);
     }
 
     @PutMapping("/{id}")

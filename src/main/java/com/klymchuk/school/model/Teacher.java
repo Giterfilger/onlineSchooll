@@ -16,23 +16,10 @@ import java.util.List;
 @Table(name = "teacher")
 public class Teacher extends User{
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private int id;
-//
-//    @Column(name = "name")
-//    private String name;
-//
-//    @Column(name = "surname")
-//    private String surname;
-//
-//    @Column(name = "email")
-//    private String email;
-//
-//    @Column(name = "phone")
-//    private String phone;
+    @Column(name = "image_url")
+    String imageUrl;
 
     @OneToMany(mappedBy = "teacher")
-    private List<Subject> subject = new ArrayList<>();
+    private List<Subject> subjects = new ArrayList<>();
 
 }

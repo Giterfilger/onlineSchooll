@@ -10,14 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TeacherDto {
-
+public class MainUserDto {
+    private int id;
     private String name;
     private String surname;
     private String email;
     private String phone;
-    private String password;
     private String imageUrl;
-    private String role;
-
+    private MainClazzDto clazz;
 }

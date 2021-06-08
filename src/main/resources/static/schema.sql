@@ -10,9 +10,23 @@ CREATE TABLE IF NOT EXISTS admin
     name        VARCHAR(32) NOT NULL,
     surname     VARCHAR(32) NOT NULL,
     email       VARCHAR(32) NOT NULL,
+    role        VARCHAR(32) NOT NULL,
     phone       VARCHAR(32) NOT NULL,
     password    VARCHAR(32) NOT NULL,
     test        VARCHAR(32) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS main_teacher
+(
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(32) NOT NULL,
+    surname     VARCHAR(32) NOT NULL,
+    email       VARCHAR(32) NOT NULL,
+    role        VARCHAR(32) NOT NULL,
+    phone       VARCHAR(32) NOT NULL,
+    password    VARCHAR(32) NOT NULL,
+    image_url   VARCHAR(264),
+    school_name        VARCHAR(32) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS student
@@ -24,6 +38,7 @@ CREATE TABLE IF NOT EXISTS student
     phone       VARCHAR(32) NOT NULL,
     password    VARCHAR(32) NOT NULL,
     role        VARCHAR(32) NOT NULL,
+    image_url   VARCHAR(264),
     clazz_id    INT NOT NULL,
 
     CONSTRAINT fk_student_clazz
@@ -37,7 +52,9 @@ CREATE TABLE IF NOT EXISTS teacher
     name        VARCHAR(32) NOT NULL,
     surname     VARCHAR(32) NOT NULL,
     email       VARCHAR(32) NOT NULL,
+    role        VARCHAR(32) NOT NULL,
     phone       VARCHAR(32) NOT NULL,
+    image_url   VARCHAR(264),
     password    VARCHAR(32) NOT NULL
 );
 

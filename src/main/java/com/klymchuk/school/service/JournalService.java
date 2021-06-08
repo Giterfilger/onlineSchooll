@@ -1,27 +1,27 @@
 package com.klymchuk.school.service;
 
-import com.klymchuk.school.dto.JournalDto;
-import com.klymchuk.school.dto.JournalFilterDto;
-import com.klymchuk.school.dto.MainJournalDto;
-import com.klymchuk.school.dto.WorkTypePercentDto;
+import com.klymchuk.school.dto.*;
 import com.klymchuk.school.error.exceptions.EntityNotFoundException;
 import com.klymchuk.school.model.Journal;
+import com.klymchuk.school.model.Student;
 import com.klymchuk.school.model.Subject;
 import com.klymchuk.school.model.WorkType;
 import com.klymchuk.school.repo.JournalRepository;
 import com.klymchuk.school.repo.StudentRepository;
 import com.klymchuk.school.repo.SubjectRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
+import java.time.Month;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class JournalService {
@@ -69,29 +69,67 @@ public class JournalService {
             throw new EntityNotFoundException("Student with id: " + studentId + " not found");
         }
 
-        if (!subjectRepository.findById(journalFilter.getSubjectId()).isPresent()) {
-            throw new EntityNotFoundException("Subject with id: " + journalFilter.getSubjectId() + " not found");
-        }
-
         return journalRepository.findByStudentId(studentId)
                 .stream()
-                .filter(j -> j.getSubject().getId() == journalFilter.getSubjectId())
+                .filter(j -> journalFilter.getSubjectIds().contains(j.getSubject().getId()))
                 .filter(j -> j.getDate().isBefore(LocalDate.parse(journalFilter.getEndDate()))
                         && j.getDate().isAfter(LocalDate.parse(journalFilter.getStartDate())))
                 .filter(j -> {
                     if (journalFilter.isMark()) {
                         return j.getMark() != null &&
-                                (j.getType().equals(journalFilter.getTypeOfWork()) ||
-                                        journalFilter.getTypeOfWork().equalsIgnoreCase("all"));
+                                (journalFilter.getTypesOfWork().contains("усі") ||
+                                        journalFilter.getTypesOfWork().contains(j.getType()));
                     } else {
                         return true;
                     }
                 })
+                .sorted(Comparator.comparing(Journal::getDate).reversed())
                 .map(j -> modelMapper.map(j, MainJournalDto.class))
                 .collect(Collectors.toList());
     }
 
+    public List<MainJournalDto> getJournalByTeacherFilter(JournalTeacherFilterDto journalFilter) {
+        return journalRepository.findByStudentIdIn(journalFilter.getStudentIds())
+                .stream()
+                .filter(j -> j.getDate().isBefore(LocalDate.parse(journalFilter.getEndDate()))
+                        && j.getDate().isAfter(LocalDate.parse(journalFilter.getStartDate())))
+                .filter(j -> journalFilter.getSubjectIds().contains(j.getSubject().getId()))
+                .sorted(Comparator.comparing(Journal::getDate).reversed())
+                .map(j -> modelMapper.map(j, MainJournalDto.class))
+                .collect(Collectors.toList());
+    }
+
+
+    public Map<Month, Double> getAverageMarkOfMonth(int studentId, int subjectId){
+        Map<String, Double> coefficientMap = getMapCoefficient(subjectId);
+
+        Map<Month, List<Journal>> journalsByMonthMap= journalRepository.findByStudentIdAndSubjectId(studentId, subjectId)
+                .stream()
+                .collect(Collectors.groupingBy(j -> j.getDate().getMonth()));
+
+        return journalsByMonthMap.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> getAverageMarkWithCoefficient(coefficientMap, e.getValue())));
+    }
+
+    public Integer getStudentRatingBySubjectId(int classId, int studentId, int subjectId){
+        List<Student> students = studentRepository.getStudentByClazzId(classId);
+
+        List<Double> averageStudentMarks = students.stream()
+                .map(s -> getAverageStudentSubjectMarkWithoutRound(s.getId(), subjectId))
+                .sorted(Comparator.comparingDouble(Double::doubleValue).reversed())
+                .collect(Collectors.toList());
+
+        return averageStudentMarks.indexOf(getAverageStudentSubjectMarkWithoutRound(studentId, subjectId)) + 1;
+    }
+
     public long getAverageStudentSubjectMark(int studentId, int subjectId) {
+        return Math.round(getAverageStudentSubjectMarkWithoutRound(studentId, subjectId));
+    }
+
+    public Double getAverageStudentSubjectMarkWithoutRound(int studentId, int subjectId) {
         Map<String, Double> coefficientMap = getMapCoefficient(subjectId);
 
         if (!studentRepository.findById(studentId).isPresent()) {
@@ -100,7 +138,20 @@ public class JournalService {
 
         List<Journal> journals = journalRepository.findByStudentIdAndSubjectId(studentId, subjectId);
 
-        return Math.round(getAverageMarkWithCoefficient(coefficientMap, journals));
+        return getAverageMarkWithCoefficient(coefficientMap, journals);
+    }
+
+    public List<RatingDto> getAverageMarkByClass(int clazzId, int subjectId) {
+        return studentRepository.getStudentByClazzId(clazzId)
+                .stream() 
+                .map(s -> RatingDto.builder()
+                            .id(s.getId())
+                            .name(s.getName())
+                            .surname((s.getSurname()))
+                            .rating(getAverageStudentSubjectMarkWithoutRound(s.getId(), subjectId))
+                            .build())
+                .sorted(Comparator.comparingDouble(RatingDto::getRating).reversed())
+                .collect(Collectors.toList());
     }
 
     public List<WorkTypePercentDto> getPercentOfWorkType(int subjectId, int studentId) {
@@ -112,9 +163,11 @@ public class JournalService {
         List<Journal> journals = journalRepository.findByStudentIdAndSubjectId(studentId, subjectId);
 
         Map<String, Integer> mapOfWorkType = journals.stream()
+                .filter(j -> j.getMark() != null)
                 .collect(Collectors.groupingBy(Journal::getType, summingInt(Journal::getMark)));
 
         Map<String, Long> mapWorkTypeAndCountOfMark = journals.stream()
+                .filter(j -> j.getMark() != null)
                 .collect(Collectors.groupingBy(Journal::getType, counting()));
 
         return mapOfWorkType.entrySet().stream()
@@ -141,13 +194,20 @@ public class JournalService {
 
         double markWithCoefficients = 0;
         for (Journal journal : journals) {
-            markWithCoefficients += journal.getMark() * coefficientMap.get(journal.getType());
-            allCoefficients += coefficientMap.get(journal.getType());
+            if (journal.isVisiting()) {
+                markWithCoefficients += journal.getMark() * coefficientMap.get(journal.getType());
+                allCoefficients += coefficientMap.get(journal.getType());
+            }
+        }
+        if (allCoefficients == 0) {
+            return 0.0;
         }
         return markWithCoefficients / allCoefficients;
     }
 
     private double getPercent(double value, long count) {
+        log.info("value: {}", value);
+        log.info("count: {}", count);
         return Math.round(((value * 100) / (count * 12)) * 100.0) / 100.0;
     }
 

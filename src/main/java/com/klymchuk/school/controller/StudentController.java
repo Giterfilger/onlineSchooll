@@ -6,9 +6,11 @@ import com.klymchuk.school.service.StudentService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/students")
 @RequiredArgsConstructor
@@ -27,9 +29,25 @@ public class StudentController {
         return studentService.getById(id);
     }
 
+    @GetMapping("/class/{id}")
+    List<MainStudentDto> getStudentsByClassId(@PathVariable int id) {
+        return studentService.getByClassId(id);
+    }
+
     @PostMapping("/")
-    MainStudentDto saveStudent(int classId, @RequestBody StudentDto studentDto) {
+    MainStudentDto saveStudent(int classId,
+                               @RequestBody StudentDto studentDto) {
         return studentService.save(studentDto, classId);
+    }
+
+    @PostMapping("/image")
+    void uploadStudentImage(@RequestParam("file") MultipartFile image, @RequestParam int id) {
+        studentService.uploadImage(image, id);
+    }
+
+    @GetMapping("/email")
+    MainStudentDto getStudentByEmail(@RequestParam String email) {
+        return studentService.getMainStudentDtoByEmail(email);
     }
 
     @PutMapping("/{id}")

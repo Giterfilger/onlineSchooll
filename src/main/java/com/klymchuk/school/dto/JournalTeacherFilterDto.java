@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class JournalFilterDto {
+public class JournalTeacherFilterDto {
 
     @ApiModelProperty(example = "2020-05-10")
     private String startDate;
@@ -24,10 +24,7 @@ public class JournalFilterDto {
     @ApiModelProperty(example = "[1,2,3]")
     private List<Integer> subjectIds = new ArrayList<>();
 
-    @ApiModelProperty(example = "true")
-    private boolean isMark;
-
-    @ApiModelProperty(example = "all")
-    private List<String> typesOfWork = new ArrayList<>();
+    @ApiModelProperty(example = "[1,2,3]")
+    private List<Integer> studentIds = new ArrayList<>();
 
 }
