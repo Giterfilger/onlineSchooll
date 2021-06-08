@@ -3,6 +3,7 @@ package com.klymchuk.school.service;
 import com.klymchuk.school.dto.*;
 import com.klymchuk.school.error.exceptions.EntityNotFoundException;
 import com.klymchuk.school.model.Journal;
+import com.klymchuk.school.model.Student;
 import com.klymchuk.school.model.Subject;
 import com.klymchuk.school.model.WorkType;
 import com.klymchuk.school.repo.JournalRepository;
@@ -14,9 +15,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.time.Month;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
@@ -99,7 +99,37 @@ public class JournalService {
                 .collect(Collectors.toList());
     }
 
+
+    public Map<Month, Double> getAverageMarkOfMonth(int studentId, int subjectId){
+        Map<String, Double> coefficientMap = getMapCoefficient(subjectId);
+
+        Map<Month, List<Journal>> journalsByMonthMap= journalRepository.findByStudentIdAndSubjectId(studentId, subjectId)
+                .stream()
+                .collect(Collectors.groupingBy(j -> j.getDate().getMonth()));
+
+        return journalsByMonthMap.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> getAverageMarkWithCoefficient(coefficientMap, e.getValue())));
+    }
+
+    public Integer getStudentRatingBySubjectId(int classId, int studentId, int subjectId){
+        List<Student> students = studentRepository.getStudentByClazzId(classId);
+
+        List<Double> averageStudentMarks = students.stream()
+                .map(s -> getAverageStudentSubjectMarkWithoutRound(s.getId(), subjectId))
+                .sorted(Comparator.comparingDouble(Double::doubleValue).reversed())
+                .collect(Collectors.toList());
+
+        return averageStudentMarks.indexOf(getAverageStudentSubjectMarkWithoutRound(studentId, subjectId)) + 1;
+    }
+
     public long getAverageStudentSubjectMark(int studentId, int subjectId) {
+        return Math.round(getAverageStudentSubjectMarkWithoutRound(studentId, subjectId));
+    }
+
+    public Double getAverageStudentSubjectMarkWithoutRound(int studentId, int subjectId) {
         Map<String, Double> coefficientMap = getMapCoefficient(subjectId);
 
         if (!studentRepository.findById(studentId).isPresent()) {
@@ -108,7 +138,20 @@ public class JournalService {
 
         List<Journal> journals = journalRepository.findByStudentIdAndSubjectId(studentId, subjectId);
 
-        return Math.round(getAverageMarkWithCoefficient(coefficientMap, journals));
+        return getAverageMarkWithCoefficient(coefficientMap, journals);
+    }
+
+    public List<RatingDto> getAverageMarkByClass(int clazzId, int subjectId) {
+        return studentRepository.getStudentByClazzId(clazzId)
+                .stream() 
+                .map(s -> RatingDto.builder()
+                            .id(s.getId())
+                            .name(s.getName())
+                            .surname((s.getSurname()))
+                            .rating(getAverageStudentSubjectMarkWithoutRound(s.getId(), subjectId))
+                            .build())
+                .sorted(Comparator.comparingDouble(RatingDto::getRating).reversed())
+                .collect(Collectors.toList());
     }
 
     public List<WorkTypePercentDto> getPercentOfWorkType(int subjectId, int studentId) {

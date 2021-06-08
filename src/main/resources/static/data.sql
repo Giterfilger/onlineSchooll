@@ -9,8 +9,8 @@ INSERT INTO main_teacher(name, surname, email, phone, role, password, school_nam
 VALUES ('Vitaliy', 'Homiak', 'vitaliy@gmail.com', '0507898747', 'MAIN_TEACHER', 'pass', 'school1', 'http://res.cloudinary.com/giterfilger/image/upload/v1615318631/school/student/2-id.jpg');
 
 INSERT INTO student(name, surname, email, phone, password, role, image_url, clazz_id)
-VALUES ('Андрій', 'Климчук', 'andrii@gmail.com', '0507898745', 'pass', 'STUDENT', 'http://res.cloudinary.com/giterfilger/image/upload/v1615318135/school/student/1-id.jpg', 1),
-       ('Богдан', 'Кравчук', 'bohdan@gmail.com', '0507898746', 'pass', 'STUDENT', 'http://res.cloudinary.com/giterfilger/image/upload/v1615318631/school/student/2-id.jpg', 1),
+VALUES ('Андрій', 'Климчук', 'andrii@gmail.com', '0507898745', 'pass', 'STUDENT', 'https://res.cloudinary.com/giterfilger/image/upload/v1622823106/school/student/id_1.jpg', 1),
+       ('Пилип', 'Орлик', 'bohdan@gmail.com', '0507898746', 'pass', 'STUDENT', 'https://res.cloudinary.com/giterfilger/image/upload/v1622652591/school/student/2-id.jpg', 1),
        ('Остап', 'Вишня', 'ostap@gmail.com', '0669893346', 'pass', 'STUDENT', 'http://res.cloudinary.com/giterfilger/image/upload/v1615318631/school/student/2-id.jpg', 2);
 
 INSERT INTO teacher(name, surname, email, password, phone, role, image_url)
@@ -60,8 +60,8 @@ VALUES ('Тема-1', 'завдання 1.1, 1.2', 'сторінка 5-10', 1),
        ('Тема-2', 'завдання 2.1', 'сторінка 10-13', 1);
 
 INSERT INTO journal(student_id, subject_id, date, mark, type, visiting)
-VALUES (1, 1, '2021-03-23', 11, 'самостійна робота', true),
-       (1, 1, '2021-03-23', 10, 'контрольна робота', true),
+VALUES (1, 1, '2021-09-23', 11, 'самостійна робота', true),
+       (1, 1, '2021-09-23', 10, 'контрольна робота', true),
        (1, 1, '2021-03-21', null, 'робота в класі', false),
        (1, 1, '2021-03-22', null, 'робота в класі', false),
        (1, 3, '2021-03-23', null, 'робота в класі', false),
@@ -71,12 +71,25 @@ VALUES (1, 1, '2021-03-23', 11, 'самостійна робота', true),
        (1, 2, '2021-03-23', null, 'робота в класі', false),
        (1, 2, '2021-03-23', null, 'робота в класі', false),
        (2, 1, '2021-03-23', 2, 'самостійна робота', true),
-       (1, 1, '2021-03-23', 11, 'контрольна робота', true),
-       (1, 2, '2021-03-23', 8, 'домашня робота', true),
-       (1, 3, '2021-03-23', 4, 'домашня робота', true),
-       (1, 3, '2021-03-23', 4, 'домашня робота', true),
-       (1, 3, '2021-03-23', 12, 'домашня робота', true),
-       (1, 4, '2021-03-23', 10, 'домашня робота', true),
+       (1, 1, '2021-10-23', 11, 'контрольна робота', true),
+       (1, 1, '2021-11-23', 10, 'контрольна робота', true),
+       (1, 1, '2021-12-23', 9, 'контрольна робота', true),
+       (1, 1, '2021-01-23', 10, 'контрольна робота', true),
+       (1, 1, '2021-01-23', 12, 'домашня робота', true),
+       (1, 1, '2021-01-23', 12, 'домашня робота', true),
+       (1, 1, '2021-01-23', 12, 'домашня робота', true),
+       (1, 1, '2021-02-23', 12, 'домашня робота', true),
+       (1, 1, '2021-02-23', 12, 'робота в класі', true),
+       (1, 1, '2021-02-25', 12, 'робота в класі', true),
+       (1, 1, '2021-02-26', 12, 'робота в класі', true),
+       (1, 1, '2021-02-13', 11, 'робота в класі', true),
+       (1, 1, '2021-02-23', 10, 'робота в класі', true),
+       (1, 1, '2021-02-23', 12, 'робота в класі', true),
+       (1, 2, '2021-10-23', 8, 'домашня робота', true),
+       (1, 3, '2021-11-23', 4, 'домашня робота', true),
+       (1, 3, '2021-11-23', 4, 'домашня робота', true),
+       (1, 3, '2021-11-23', 12, 'домашня робота', true),
+       (1, 4, '2021-11-23', 10, 'домашня робота', true),
        (1, 4, '2021-03-23', 10, 'самостійна робота', true),
        (1, 4, '2021-03-23', 10, 'робота в класі', true),
        (1, 5, '2021-03-23', 12, 'самостійна робота', true),

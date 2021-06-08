@@ -1,13 +1,16 @@
 package com.klymchuk.school.controller;
 
 import com.klymchuk.school.dto.*;
+import com.klymchuk.school.model.Student;
 import com.klymchuk.school.service.JournalService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Month;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @CrossOrigin
@@ -45,6 +48,21 @@ public class JournalController {
     @GetMapping("/average/")
     Long getAverageMark(int studentId, int subjectId) {
         return journalService.getAverageStudentSubjectMark(studentId, subjectId);
+    }
+
+    @GetMapping("/rating")
+    Integer getStudentRatingBySubjectId(int classId, int studentId, int subjectId){
+        return journalService.getStudentRatingBySubjectId(classId, studentId, subjectId);
+    }
+
+    @GetMapping("/rating/month")
+    Map<Month, Double> getAverageMarkOfMonth(int studentId, int subjectId) {
+        return journalService.getAverageMarkOfMonth(studentId, subjectId);
+    }
+
+    @GetMapping("/rating/class/{id}")
+    List<RatingDto> getAverageMarkByClass(@PathVariable int id, int subjectId){
+        return journalService.getAverageMarkByClass(id, subjectId);
     }
 
     @GetMapping("/percent/")

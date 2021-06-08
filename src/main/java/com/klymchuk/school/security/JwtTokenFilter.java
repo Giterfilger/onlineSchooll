@@ -1,5 +1,6 @@
 package com.klymchuk.school.security;
 
+import com.klymchuk.school.error.exceptions.AuthException;
 import com.klymchuk.school.util.CookieUtils;
 import io.jsonwebtoken.JwtException;
 import lombok.Data;
